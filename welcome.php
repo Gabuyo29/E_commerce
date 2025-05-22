@@ -6,14 +6,14 @@ require_once 'connection.php';
 
 
 if (!isset($_SESSION['username'])) {
-    // Redirect to login page if the session is not set
+   
     header("Location: login.php");
     exit();
 }
 
 $username = $_SESSION['username'];
 
-// Fetch products grouped by name and user_id
+
 $conn = OpenCon();
 $stmt = $conn->prepare("SELECT MIN(product_id) AS product_id, name, price, image FROM products GROUP BY name, user_id");
 $stmt->execute();
@@ -116,11 +116,11 @@ CloseCon($conn);
       gap: 1rem;
       width: 200px;
       align-items: flex-start;
-      margin-left: 24px; /* Added left margin */
+      margin-left: 24px;
     }
     .filters button {
-      padding: 0.7rem 1.5rem; /* Increased size */
-      font-size: 1.1rem;      /* Slightly bigger text */
+      padding: 0.7rem 1.5rem; 
+      font-size: 1.1rem;      
       border-radius: 20px;
       border: none;
       background-color: #df9f49;
