@@ -1,0 +1,147 @@
+body {
+            background: #181818;
+            color: #fff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .orders-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            background: #232323;
+            border-radius: 16px;
+            padding: 2rem 2.5rem;
+            box-shadow: 0 4px 24px #0005;
+        }
+        h1 {
+            color: #df9f49;
+            margin-bottom: 2rem;
+            letter-spacing: 1px;
+        }
+        .order-card {
+            background: #292929;
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 2px 8px #0002;
+            padding: 1.5rem 1.5rem 1rem 1.5rem;
+        }
+        .order-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: #fff3e0;
+            color: #b26a00;
+            border-radius: 8px;
+            padding: 0.7rem 1.2rem;
+            margin-bottom: 1.2rem;
+            font-size: 1.08rem;
+        }
+        .order-header strong {
+            color: #b26a00;
+        }
+        .order-status {
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-left: auto;
+        }
+        .order-status.confirmed { color: #2196f3; }
+        .order-status.shipped { color: #ff9800; }
+        .order-status.delivered { color: #4caf50; }
+        .order-status.cancelled { color: #f44336; }
+        .order-items-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: transparent;
+        }
+        .order-items-table th, .order-items-table td {
+            padding: 0.85rem 0.6rem;
+            border-bottom: 1px solid #353535;
+            text-align: left;
+            vertical-align: middle;
+        }
+        .order-items-table th {
+            background: #232323;
+            color: #df9f49;
+            font-weight: 600;
+            font-size: 1rem;
+            border-top: 1px solid #353535;
+        }
+        .order-items-table tr:last-child td {
+            border-bottom: none;
+        }
+        .order-items-table tr {
+            transition: background 0.18s;
+        }
+        .order-items-table tbody tr:hover {
+            background: #222;
+        }
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+        }
+        .product-info img {
+            width: 62px;
+            height: 62px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #fff;
+            box-shadow: 0 1px 4px #0002;
+        }
+        .product-name {
+            font-size: 1.08rem;
+            color: #fff;
+            font-weight: 500;
+        }
+        .size-badge {
+            background: #444;
+            color: #fff;
+            border-radius: 4px;
+            padding: 0.22rem 0.8rem;
+            font-size: 0.97rem;
+            margin-left: 0.2rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        .track-btn {
+            background: #df9f49;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.4rem 1.2rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-top: 1rem;
+            opacity: 0.85;
+        }
+        .track-btn:disabled {
+            background: #888;
+            cursor: not-allowed;
+        }
+        .empty {
+            color: #aaa;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .back-button {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.6rem 1.2rem;
+            background-color: #df9f49;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            box-shadow: 0 1px 4px #0002;
+        }
+        @media (max-width: 700px) {
+            .orders-container { padding: 1rem 0.2rem; }
+            .order-card { padding: 1rem 0.2rem; }
+            .product-info img { width: 44px; height: 44px; }
+            .product-name { font-size: 0.98rem; }
+        }

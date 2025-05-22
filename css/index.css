@@ -1,0 +1,92 @@
+* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0f0f0f;
+      color: white;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem;
+    }
+    .logo {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .buttons button {
+      margin-left: 1rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid white;
+      color: white;
+    }
+    .btn-white {
+      background-color: white;
+      color: black;
+    }
+    .hero {
+      text-align: left;
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 600px;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      margin-bottom: 2rem;
+      color: #ccc;
+    }
+    .hero button {
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      background-color: white;
+      color: black;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+    .illustration {
+      flex: 1.5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-image: url('');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+    }
+    .container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      height: 90vh;
+      padding: 0 3rem;
+    }
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .illustration {
+        position: static;
+        width: 100%;
+        margin-top: 2rem;
+      }
+    }

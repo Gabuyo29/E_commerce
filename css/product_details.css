@@ -1,0 +1,123 @@
+body {
+      font-family: Arial, sans-serif;
+      background-color: #1a1a1a;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 1rem;
+      gap: 2rem;
+    }
+    .gallery {
+      flex: 1;
+    }
+    .details {
+      flex: 1;
+      background-color: #333;
+      padding: 2rem;
+      border-radius: 10px;
+    }
+    .details h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .details p {
+      margin: 1rem 0;
+      line-height: 1.6;
+    }
+    .details .price {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 1rem 0;
+    }
+    .details .sizes {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    .details .sizes button {
+      padding: 0.5rem 1rem;
+      background-color: #555;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .details .sizes button:hover {
+      background-color: #777;
+    }
+    .details .sizes button.disabled {
+      background-color: #333;
+      color: #888;
+      cursor: not-allowed;
+    }
+    .details .sizes button.selected {
+      background-color: #df9f49;
+      color: #fff;
+    }
+    .details .add-to-bag {
+      margin-top: 1rem;
+      padding: 0.8rem 2rem;
+      background-color: #df9f49;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .details .add-to-bag:hover {
+      background-color: #c87e2f;
+    }
+    .back-button {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: #df9f49;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .slider {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+    .slides {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+    .slides img {
+      width: 100%;
+      border-radius: 10px;
+    }
+    .slider-buttons {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+    }
+    .slider-buttons button {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+    .slider-buttons button:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
