@@ -1,4 +1,7 @@
 <?php
+// Handles adding a product to the shopping cart session.
+// Starts session, validates POST data, adds product to cart, and redirects to cart page.
+
 session_start();
 require_once 'connection.php';
 

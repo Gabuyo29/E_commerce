@@ -1,14 +1,14 @@
 <?php
 $host = "localhost";
 $username = "root"; 
-$db_pass = ""; 
+$db_pass = "johnjohnjohn"; 
 $db_name = "e_commerce"; 
 
 
 function OpenCon() {
     $dbhost = "localhost";
     $dbuser = "root"; 
-    $dbpass = ""; 
+    $dbpass = "johnjohnjohn"; 
     $dbname = "e_commerce"; 
 
 

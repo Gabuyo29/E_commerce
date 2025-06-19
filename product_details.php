@@ -2,6 +2,7 @@
 session_start();
 require_once 'connection.php';
 
+
 if (!isset($_GET['id'])) {
     header("Location: welcome.php");
     exit();
@@ -9,6 +10,7 @@ if (!isset($_GET['id'])) {
 
 $product_id = $_GET['id'];
 
+// Handle add to cart
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['size'], $_POST['price'])) {
     if (!isset($_SESSION['user_id'])) {
         header("Location: login.php");
@@ -22,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['size'],
 
     $conn = OpenCon();
 
+    // Find or create pending order
     $stmt = $conn->prepare("SELECT order_id FROM orders WHERE user_id = ? AND status = 'pending' LIMIT 1");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -37,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['size'],
         $stmt->close();
     }
 
+    // Add or update item in order_items
     $stmt = $conn->prepare("SELECT order_item_id, quantity FROM order_items WHERE order_id = ? AND product_id = ? AND size = ?");
     $stmt->bind_param("iis", $order_id, $product_id, $size);
     $stmt->execute();
@@ -56,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['size'],
         $stmt->close();
     }
 
+    // Update order total
     $stmt = $conn->prepare("SELECT SUM(price * quantity) FROM order_items WHERE order_id = ?");
     $stmt->bind_param("i", $order_id);
     $stmt->execute();
@@ -74,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['size'],
     exit();
 }
 
+// Fetch product details
 $conn = OpenCon();
 $stmt = $conn->prepare("SELECT product_id, name, price, image, description, user_id FROM products WHERE product_id = ?");
 $stmt->bind_param("i", $product_id);
@@ -87,6 +93,7 @@ if (!$product) {
     exit();
 }
 
+// Fetch available sizes
 $stmt = $conn->prepare("SELECT product_id, sizes, stock, price, image FROM products WHERE name = ? AND user_id = ?");
 $stmt->bind_param("si", $product['name'], $product['user_id']);
 $stmt->execute();
@@ -102,6 +109,7 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
+// Fetch all images for product
 $stmt = $conn->prepare("SELECT image FROM products WHERE name = ? AND user_id = ?");
 $stmt->bind_param("si", $product['name'], $product['user_id']);
 $stmt->execute();
@@ -126,15 +134,12 @@ CloseCon($conn);
   <a href="javascript:history.back()" class="back-button">← Back</a>
   <div class="container">
     <div class="gallery">
+     
       <div class="slider">
         <div class="slides" id="slides">
           <?php foreach ($product_images as $index => $image): ?>
             <img src="<?php echo htmlspecialchars($image); ?>" alt="Product Image" data-size-index="<?php echo $index; ?>">
           <?php endforeach; ?>
-        </div>
-        <div class="slider-buttons">
-          <button id="prevButton">❮</button>
-          <button id="nextButton">❯</button>
         </div>
       </div>
     </div>
@@ -144,6 +149,7 @@ CloseCon($conn);
       <p class="description"><?php echo htmlspecialchars($product['description']); ?></p>
       <p class="price" id="productPrice">
         ₱<?php
+          // Show price for first available size
           $firstAvailable = null;
           foreach (['XS', 'S', 'M', 'L', 'XL', 'XXL'] as $size) {
               if (isset($sizes[$size])) {
@@ -165,6 +171,7 @@ CloseCon($conn);
           </button>
         <?php endforeach; ?>
       </div>
+  
       <form id="addToCartForm" action="product_details.php?id=<?php echo htmlspecialchars($product['product_id']); ?>" method="POST">
         <input type="hidden" name="id" value="<?php echo htmlspecialchars($product['product_id']); ?>">
         <input type="hidden" name="name" value="<?php echo htmlspecialchars($product['name']); ?>">
@@ -176,28 +183,9 @@ CloseCon($conn);
     </div>
   </div>
   <script>
+   
     const slides = document.getElementById('slides');
-    const prevButton = document.getElementById('prevButton');
-    const nextButton = document.getElementById('nextButton');
-    let currentIndex = 0;
-
-    const updateSlider = () => {
-      const slideWidth = slides.children[0].clientWidth;
-      slides.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-    };
-
-    prevButton.addEventListener('click', () => {
-      currentIndex = (currentIndex > 0) ? currentIndex - 1 : slides.children.length - 1;
-      updateSlider();
-    });
-
-    nextButton.addEventListener('click', () => {
-      currentIndex = (currentIndex < slides.children.length - 1) ? currentIndex + 1 : 0;
-      updateSlider();
-    });
-
-    window.addEventListener('resize', updateSlider);
-
+   
     let selectedSize = null;
     const sizesData = <?php echo json_encode($sizes); ?>;
 
@@ -227,6 +215,10 @@ CloseCon($conn);
         }
       });
     });
+  </script>
+</body>
+</html>
+
   </script>
 </body>
 </html>

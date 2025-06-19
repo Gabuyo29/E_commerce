@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
+    // Fetch user by username
     $stmt = $conn->prepare("SELECT user_id, username, password, user_role FROM users WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
@@ -19,12 +20,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bind_result($db_user_id, $db_username, $db_password, $db_user_role);
         $stmt->fetch();
 
+       
         if (password_verify($password, $db_password)) {
             $_SESSION['username'] = $db_username;
             $_SESSION['user_role'] = $db_user_role;
             $_SESSION['user_id'] = $db_user_id;
             $_SESSION['logged_in'] = true;
 
+            
             if ($db_user_role === 'admin') {
                 header("Location: admin_dashboard.php");
             } else {
@@ -32,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             exit();
         } elseif ($password === $db_password) {
-         
+           
             $error = "Warning: Password is not hashed. Please update your password.";
             $_SESSION['username'] = $db_username;
             $_SESSION['user_role'] = $db_user_role;
@@ -56,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     CloseCon($conn);
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
