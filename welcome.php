@@ -53,17 +53,18 @@ while ($row = $womensResult->fetch_assoc()) {
 $womensStmt->close();
 
 // Fetch all products
-$stmt = $conn->prepare("SELECT product_id, name, price, image, category FROM products ORDER BY product_id DESC");
+$stmt = $conn->prepare("SELECT product_id, name, price, image, category, active FROM products ORDER BY product_id DESC");
 $stmt->execute();
 $result = $stmt->get_result();
 $allProducts = $result->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 CloseCon($conn);
 
-// Deduplicate products by name, price, and image
+// Deduplicate products by name, price, and image, and filter only active products
 $products = [];
 $seen = [];
 foreach ($allProducts as $product) {
+    if (isset($product['active']) && $product['active'] != 1) continue; // Only show active products
     $key = strtolower(trim($product['name'])) . '|' . $product['price'] . '|' . strtolower(trim($product['image']));
     if (!isset($seen[$key])) {
         $products[] = $product;

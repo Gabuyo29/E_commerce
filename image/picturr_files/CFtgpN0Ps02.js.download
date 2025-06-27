@@ -1,0 +1,3 @@
+;/*FB_PKG_DELIM*/
+
+__d("ClickToWhatsAppBusinessDownloadFalcoEvent",["FalcoLoggerInternal","getFalcoLogPolicy_DO_NOT_USE"],(function(a,b,c,d,e,f,g){"use strict";a=c("getFalcoLogPolicy_DO_NOT_USE")("1923272");b=d("FalcoLoggerInternal").create("click_to_whats_app_business_download",a);e=b;g["default"]=e}),98);

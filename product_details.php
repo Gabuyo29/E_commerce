@@ -94,7 +94,7 @@ if (!$product) {
 }
 
 // Fetch available sizes
-$stmt = $conn->prepare("SELECT product_id, sizes, stock, price, image FROM products WHERE name = ? AND user_id = ?");
+$stmt = $conn->prepare("SELECT product_id, sizes, stock, price, image FROM products WHERE name = ? AND user_id = ? AND active = 1");
 $stmt->bind_param("si", $product['name'], $product['user_id']);
 $stmt->execute();
 $result = $stmt->get_result();

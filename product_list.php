@@ -157,7 +157,7 @@ if ($search_query !== '') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'edit') {
     if (
         isset($_POST['edit_product_id'], $_POST['name'], $_POST['description'], 
-              $_POST['price'], $_POST['category'], $_POST['stock'], $_POST['sizes'])
+              $_POST['price'], $_POST['category'], $_POST['stock'], $_POST['sizes'], $_POST['active'])
     ) {
         $product_id = $_POST['edit_product_id'];
         $name = $_POST['name'];
@@ -166,6 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
         $category = $_POST['category'];
         $stock = $_POST['stock'];
         $sizes = htmlspecialchars(trim($_POST['sizes']));
+        $active = intval($_POST['active']);
         $image = null;
 
         $conn = OpenCon();
@@ -196,13 +197,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
             }
         }
 
-        $query = "UPDATE products SET name = ?, description = ?, price = ?, category = ?, stock = ?, sizes = ?" . ($image ? ", image = ?" : "") . " WHERE product_id = ?";
+        $query = "UPDATE products SET name = ?, description = ?, price = ?, category = ?, stock = ?, sizes = ?, active = ?" . ($image ? ", image = ?" : "") . " WHERE product_id = ?";
         $stmt = $conn->prepare($query);
 
         if ($image) {
-            $stmt->bind_param("ssdssssi", $name, $description, $price, $category, $stock, $sizes, $image, $product_id);
+            $stmt->bind_param("ssdsssisi", $name, $description, $price, $category, $stock, $sizes, $active, $image, $product_id);
         } else {
-            $stmt->bind_param("ssdssss", $name, $description, $price, $category, $stock, $sizes, $product_id);
+            $stmt->bind_param("ssdssssi", $name, $description, $price, $category, $stock, $sizes, $active, $product_id);
         }
 
         if ($stmt->execute()) {
@@ -270,18 +271,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
                         <th>Stock</th>
                         <th>Image</th>
                         <th>Sizes</th>
+                        <th>Active</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($products)): ?>
                         <tr>
-                            <td colspan="9">No products available.</td>
+                            <td colspan="10">No products available.</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($products as $product): ?>
                             <tr>
-                                <!-- Product row with edit, delete, add size -->
                                 <td><input type="checkbox" name="delete_product_ids[]" value="<?php echo htmlspecialchars($product['product_id']); ?>"></td>
                                 <td><?php echo htmlspecialchars($product['name']); ?></td>
                                 <td><?php echo htmlspecialchars($product['description']); ?></td>
@@ -296,24 +297,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
                                     <?php endif; ?>
                                 </td>
                                 <td><?php echo htmlspecialchars($product['sizes']); ?></td>
+                                <td><?php echo ($product['active'] == 1) ? 'Active' : 'Inactive'; ?></td>
                                 <td>
-                                    <form action="product_list.php?action=edit" method="POST" enctype="multipart/form-data" style="display: inline;">
-                                        <input type="hidden" name="edit_product_id" value="<?php echo htmlspecialchars($product['product_id']); ?>">
-                                        <input type="text" name="name" value="<?php echo htmlspecialchars($product['name']); ?>" required>
-                                        <input type="text" name="description" value="<?php echo htmlspecialchars($product['description']); ?>" required>
-                                        <input type="number" name="price" step="0.01" value="<?php echo htmlspecialchars($product['price']); ?>" required>
-                                        <input type="text" name="category" value="<?php echo htmlspecialchars($product['category']); ?>" required>
-                                        <input type="number" name="stock" value="<?php echo htmlspecialchars($product['stock']); ?>" required>
-                                        <input type="text" name="sizes" value="<?php echo htmlspecialchars($product['sizes']); ?>" required>
-                                        <input type="file" name="image" accept="image/*">
-                                        <button type="submit">Save</button>
-                                    </form>
+                                    <button type="button"
+                                        onclick="openEditModal(
+                                            '<?php echo htmlspecialchars($product['product_id']); ?>',
+                                            '<?php echo htmlspecialchars(addslashes($product['name'])); ?>',
+                                            '<?php echo htmlspecialchars(addslashes($product['description'])); ?>',
+                                            '<?php echo htmlspecialchars($product['price']); ?>',
+                                            '<?php echo htmlspecialchars(addslashes($product['category'])); ?>',
+                                            '<?php echo htmlspecialchars($product['stock']); ?>',
+                                            '<?php echo htmlspecialchars($product['sizes']); ?>',
+                                            '<?php echo htmlspecialchars($product['active']); ?>'
+                                        )"
+                                        style="background:#007bff;color:white;padding:5px 10px;border:none;border-radius:4px;">Edit</button>
                                     <a href="delete_product.php?product_id=<?php echo htmlspecialchars($product['product_id']); ?>" 
                                        style="text-decoration: none; background-color: #dc3545; color: white; padding: 5px 10px; border-radius: 4px; margin-left: 5px;"
                                        onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
-                                   
                                     <button type="button" onclick="showAddSizeForm('<?php echo htmlspecialchars($product['product_id']); ?>')" style="margin-left:5px;background:#28a745;color:white;padding:5px 10px;border:none;border-radius:4px;">Add Size</button>
-                                   
                                     <form action="product_list.php?action=add_size" method="POST" style="display:none;margin-top:5px;" class="add-size-form" id="add-size-form-<?php echo htmlspecialchars($product['product_id']); ?>">
                                         <input type="hidden" name="base_product_id" value="<?php echo htmlspecialchars($product['product_id']); ?>">
                                         <select name="new_size" required>
@@ -337,6 +338,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
             </table>
             <button type="submit" style="margin-top: 10px; background-color: #dc3545; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;" onclick="return confirm('Are you sure you want to delete the selected products?');">Delete Selected</button>
         </form>
+
+        <!-- Edit Modal -->
+        <div id="editModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);z-index:1000;align-items:center;justify-content:center;">
+            <div style="background:#fff;padding:30px 20px;border-radius:8px;max-width:400px;margin:60px auto;position:relative;">
+                <form id="editProductForm" action="product_list.php?action=edit" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="edit_product_id" id="edit_product_id">
+                    <div>
+                        <label>Name:</label>
+                        <input type="text" name="name" id="edit_name" required>
+                    </div>
+                    <div>
+                        <label>Description:</label>
+                        <input type="text" name="description" id="edit_description" required>
+                    </div>
+                    <div>
+                        <label>Price:</label>
+                        <input type="number" name="price" id="edit_price" step="0.01" required>
+                    </div>
+                    <div>
+                        <label>Category:</label>
+                        <input type="text" name="category" id="edit_category" required>
+                    </div>
+                    <div>
+                        <label>Stock:</label>
+                        <input type="number" name="stock" id="edit_stock" required>
+                    </div>
+                    <div>
+                        <label>Sizes:</label>
+                        <input type="text" name="sizes" id="edit_sizes" required>
+                    </div>
+                    <div>
+                        <label>Active:</label>
+                        <select name="active" id="edit_active" required>
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Image:</label>
+                        <input type="file" name="image" accept="image/*">
+                    </div>
+                    <div style="margin-top:10px;">
+                        <button type="submit" style="background:#007bff;color:white;padding:5px 15px;border:none;border-radius:4px;">Save</button>
+                        <button type="button" onclick="closeEditModal()" style="background:#ccc;color:black;padding:5px 15px;border:none;border-radius:4px;">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     <?php else: ?>
         <!-- Product view table -->
         <table>
@@ -349,12 +398,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
                     <th>Stock</th>
                     <th>Image</th>
                     <th>Sizes</th>
+                    <th>Active</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($products)): ?>
                     <tr>
-                        <td colspan="7">No products available.</td>
+                        <td colspan="8">No products available.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($products as $product): ?>
@@ -372,6 +422,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
                                 <?php endif; ?>
                             </td>
                             <td><?php echo htmlspecialchars($product['sizes']); ?></td>
+                            <td><?php echo ($product['active'] == 1) ? 'Active' : 'Inactive'; ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
@@ -394,6 +445,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
         function hideAddSizeForm(productId) {
             var form = document.getElementById('add-size-form-' + productId);
             if (form) form.style.display = 'none';
+        }
+        function openEditModal(id, name, description, price, category, stock, sizes, active) {
+            document.getElementById('edit_product_id').value = id;
+            document.getElementById('edit_name').value = name;
+            document.getElementById('edit_description').value = description;
+            document.getElementById('edit_price').value = price;
+            document.getElementById('edit_category').value = category;
+            document.getElementById('edit_stock').value = stock;
+            document.getElementById('edit_sizes').value = sizes;
+            document.getElementById('edit_active').value = active;
+            document.getElementById('editModal').style.display = 'flex';
+        }
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
         }
     </script>
 
